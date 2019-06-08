@@ -14,3 +14,7 @@ hareket.launch dosyası diff_drive ile tekerlerin farklı hızlarda dönmesi ile
 
 
 $ roslaunch models hareket.launch
+
+
+
+Anlatım: https://youtu.be/LbJB_mqLW2o
