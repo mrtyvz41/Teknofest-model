@@ -1,0 +1,26 @@
+type: "diff_drive_controller/DiffDriveController"
+publish_rate: 50
+
+left_wheel: ['arka_sol_teker_joint', 'on_sol_teker_joint']
+right_wheel: ['arka_sag_teker_joint','on_sag_teker_joint']
+
+wheel_separation: 0.44
+
+pose_covariance_diagonal : [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+twist_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+
+
+base_frame_id: ana_govde
+
+linear:
+  x:
+    has_velocity_limits : true
+    max_velocity : 10.0
+    has_acceleration_limits: true
+    max_acceleration : 1.0
+angular:
+  z:
+    has_velocity_limits : true
+    max_velocity : 10.0 
+    has_acceleration_limits: true
+    max_acceleration : 1.0

@@ -1,0 +1,260 @@
+<?xml version="1.0"?>
+<robot name="evrim">
+
+	<!-- RENKLER -->
+	<material name="mavi">
+		<color rgba="0 0 1 1"/>
+	</material>
+	<material name="siyah">
+		<color rgba="1 1 1 1"/>
+	</material>
+	<material name="beyaz">
+		<color rgba="0 0 0 1"/>
+	</material>
+
+
+	<!-- ANA GOVDE -->
+	<link name="ana_govde">
+		<visual>
+			<geometry>
+				<box size="3 1.2 0.5"/>
+			</geometry>
+			<material name="mavi"/>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="3 1.2 0.5"/>
+			</geometry>
+		</collision>
+		<inertial>
+			<mass value="80"/>
+			<inertia ixx="1.0" ixy="0.0" ixz="0" iyy="1.0" iyz="0.0" izz="1.0"/>
+		</inertial>
+	</link>
+
+	<!-- TASIYICILAR -->
+
+	<link name="on_tasiyici">
+		<visual>
+			<geometry>
+				<box size="0.05 1.8 0.05"/>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="0.05 1.8 0.05"/>
+			</geometry>
+		</collision>
+		<inertial>
+			<mass value="5"/>
+			<inertia ixx="1.0" ixy="0.0" ixz="0" iyy="1.0" iyz="0.0" izz="1.0"/>
+		</inertial>
+	</link>
+
+	<link name="arka_tasiyici">
+		<visual>
+			<geometry>
+				<box size="0.05 1.8 0.05"/>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="0.05 1.8 0.05"/>
+			</geometry>
+		</collision>
+		<inertial>
+			<mass value="5"/>
+			<inertia ixx="1.0" ixy="0.0" ixz="0" iyy="1.0" iyz="0.0" izz="1.0"/>
+		</inertial>
+	</link>
+
+		<!-- TASIYICI JOINT -->	
+	
+	<joint name="on_tasiyici_joint" type="fixed">
+		<parent link="ana_govde"/>
+		<child link="on_tasiyici"/>
+		<origin xyz="1.2 0 -0.1"/>
+	</joint> 
+
+
+	<joint name="arka_tasiyici_joint" type="fixed">
+		<parent link="ana_govde"/>
+		<child link="arka_tasiyici"/>
+		<origin xyz="-1.2 0 -0.1"/>
+	</joint>
+
+	<!-- ON SAG TEKER  -->	
+
+	<link name="on_sag_teker">
+		<visual>
+			<geometry>
+				<cylinder length="0.05" radius="0.4"/>
+			</geometry>
+			<origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+			<metarial name="siyah"/>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="0.05 1.8 0.05"/>
+			</geometry>
+			<origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+		</collision>
+		<inertial>
+			<mass value="2"/>
+			<inertia ixx="1.0" ixy="0.0" ixz="0" iyy="1.0" iyz="0.0" izz="1.0"/>
+		</inertial>
+	</link>
+					<!-- ON SAG KRAMER -->
+						<link name="on_sag_kramer">
+							<visual>
+								<geometry>
+									<cylinder length="0.01" radius="0.03"/>
+								</geometry>
+							</visual>
+							<collision>
+								<geometry>
+									<box size="0.05 1.8 0.05"/>
+								</geometry>
+							</collision>
+							<inertial>
+								<mass value="5"/>
+								<inertia ixx="1.0" ixy="0.0" ixz="0" iyy="1.0" iyz="0.0" izz="1.0"/>
+							</inertial>
+						</link>
+					<!-- ON SAG KRAMER JOINT-->
+					<joint name="on_sag_kramer_joint" type="revolute">
+						<axis xyz="0 0 1"/>
+						<limit effort="1000.0" lower="-0.548" upper="0.548" velocity="0.5"/>
+						<parent link="on_tasiyici"/>
+						<child link="on_sag_kramer"/>
+						<origin xyz="0 -0.9 0"/>
+					</joint>
+					<!-- ON SAG TEKER BAGLANTI -->
+					<joint name="on_sag_teker_joint" type="continuous">
+						<axis xyz="0 1 0"/>
+						<parent link="on_sag_kramer"/>
+						<child link="on_sag_teker"/>
+						<origin xyz="0 -0.09 0"/>					
+					</joint>
+
+	<!-- ON SOL TEKER -->
+	<link name="on_sol_teker">
+		<visual>
+			<geometry>
+				<cylinder length="0.05" radius="0.4"/>
+			</geometry>
+			<origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+			<metarial name="siyah"/>
+		</visual>
+	<collision>
+			<geometry>
+				<box size="0.05 1.8 0.05"/>
+			</geometry>
+			<origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+		</collision>
+		<inertial>
+			<mass value="2"/>
+			<inertia ixx="1.0" ixy="0.0" ixz="0" iyy="1.0" iyz="0.0" izz="1.0"/>
+		</inertial>
+	</link>
+					<!-- ON SOL KRAMER -->
+						<link name="on_sol_kramer">
+							<visual>
+								<geometry>
+									<cylinder length="0.01" radius="0.03"/>
+								</geometry>
+							</visual>
+							<collision>
+								<geometry>
+									<box size="0.05 1.8 0.05"/>
+								</geometry>
+							</collision>
+							<inertial>
+								<mass value="5"/>
+								<inertia ixx="1.0" ixy="0.0" ixz="0" iyy="1.0" iyz="0.0" izz="1.0"/>
+							</inertial>
+						</link>
+					<!-- ON SOL KRAMER JOINT-->
+					<joint name="on_sol_kramer_joint" type="revolute">
+						<axis xyz="0 0 1"/>
+						<limit effort="1000.0" lower="-0.548" upper="0.548" velocity="0.5"/>
+						<parent link="on_tasiyici"/>
+						<child link="on_sol_kramer"/>
+						<origin xyz="0 0.9 0"/>
+					</joint>
+					<!-- ON SOL TEKER BAGLANTI -->
+					<joint name="on_sol_teker_joint" type="continuous">
+						<axis xyz="0 1 0"/>
+						<parent link="on_sol_kramer"/>
+						<child link="on_sol_teker"/>
+						<origin xyz="0 0.09 0"/>					
+					</joint>
+
+
+	<!-- ARKA SAG TEKER -->
+	<link name="arka_sag_teker">
+		<visual>
+			<geometry>
+				<cylinder length="0.05" radius="0.4"/>
+			</geometry>
+			<origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+			<metarial name="siyah"/>
+		</visual>
+	<collision>
+			<geometry>
+				<box size="0.05 1.8 0.05"/>
+			</geometry>
+			<origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+		</collision>
+		<inertial>
+			<mass value="2"/>
+			<inertia ixx="1.0" ixy="0.0" ixz="0" iyy="1.0" iyz="0.0" izz="1.0"/>
+		</inertial>
+	</link>
+
+					<!-- ARKA SAG TEKER JOINT-->
+					<joint name="arka_sag_teker_joint" type="continuous">
+						<axis xyz="0 1 0"/>
+						<parent link="arka_tasiyici"/>
+						<child link="arka_sag_teker"/>
+						<origin xyz="0 -0.9 0"/>
+					</joint>
+
+	<!-- ARKA SOL TEKER -->
+	<link name="arka_sol_teker">
+		<visual>
+			<geometry>
+				<cylinder length="0.05" radius="0.4"/>
+			</geometry>
+			<origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+			<metarial name="siyah"/>
+		</visual>
+	<collision>
+			<geometry>
+				<box size="0.05 1.8 0.05"/>
+			</geometry>
+			<origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+		</collision>
+		<inertial>
+			<mass value="2"/>
+			<inertia ixx="1.0" ixy="0.0" ixz="0" iyy="1.0" iyz="0.0" izz="1.0"/>
+		</inertial>
+	</link>
+
+
+					<!-- ARK SOL TEKER JOINT-->
+
+					<joint name="arka_sol_teker_joint" type="continuous">
+						<axis xyz="0 1 0"/>
+						<parent link="arka_tasiyici"/>
+						<child link="arka_sol_teker"/>
+						<origin xyz="0 0.9 0"/>
+					</joint>
+
+
+
+
+
+
+
+</robot>

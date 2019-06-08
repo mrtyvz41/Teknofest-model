@@ -1,0 +1,261 @@
+<?xml version="1.0"?>
+<robot name="multipleshapes">
+	<material name="mavi">
+		<color rgba="0 0 1 1"/>
+	</material>
+	<material name="siyah">
+		<color rgba="1 1 1 1"/>
+	</material>
+	<material name="beyaz">
+		<color rgba="0 0 0 1"/>
+	</material>
+
+
+  <link name="ana_govde">
+    <visual>
+	<geometry>
+	  <box size="3 1.2 0.5"/>
+	</geometry>
+	<material name="mavi"/>
+    </visual>
+  </link>
+
+  <link name="bas">
+    <visual>
+			<geometry>
+	 		 	<box size="1 0.6 0.4"/>
+			</geometry>
+    </visual>
+  </link>
+
+	<joint name="ana_bas" type="fixed">
+   <parent link="ana_govde"/>
+   <child link="bas"/>
+   <origin xyz="0.8 0 0.3"/>
+	</joint>
+
+
+
+
+
+
+
+	<link name="sol_on_tasiyici">
+		<visual>
+			<geometry>
+				<box size="0.05 1.8 0.05"/>
+			</geometry>
+		</visual>
+	</link>
+
+	<joint name="sol_on_tasiyici_joint" type="prismatic">
+   <parent link="ana_govde"/>
+   <child link="sol_on_tasiyici"/>
+   <origin xyz="1.2 0 -0.1"/>
+	 <limit effort="1000.0" lower="-0.15" upper="0" velocity="0.5"/>
+	</joint>
+	
+		<link name="sol_on_kramer">
+		<visual>
+			<geometry>
+				<cylinder length="0.01" radius="0.03"/>
+			</geometry>
+			<material name="siyah"/>
+		</visual>
+	</link>
+
+	<joint name="sol_on_kramer_joint" type="revolute">
+		<axis xyz="0 0 1"/>
+		<limit effort="1000.0" lower="-0.548" upper="0.548" velocity="0.5"/>
+    <parent link="sol_on_tasiyici"/>
+		<child link="sol_on_kramer"/>
+		<origin xyz="0 -0.9 0"/>
+	</joint>
+
+
+	<link name="sol_on_teker">
+		<visual>
+			<geometry>
+				<cylinder length="0.05" radius="0.4"/>
+			</geometry>
+		<origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+		<material name="siyah"/>
+		</visual>
+	</link>
+
+	<joint name="sol_on_teker_baglanti"  type="continuous">
+		<axis xyz="0 1 0"/>
+	<parent link="sol_on_kramer"/>
+	<child link="sol_on_teker"/>
+	<origin xyz="0 -0.08 0"/>
+	</joint>
+	
+	
+			<link name="sag_on_kramer">
+		<visual>
+			<geometry>
+				<cylinder length="0.01" radius="0.03"/>
+			</geometry>
+			<material name="siyah"/>
+		</visual>
+	</link>
+
+	<joint name="sag_on_kramer_joint" type="revolute">
+		<axis xyz="0 0 1"/>
+		<limit effort="1000.0" lower="-0.548" upper="0.548" velocity="0.5"/>
+    <parent link="sol_on_tasiyici"/>
+		<child link="sag_on_kramer"/>
+		<origin xyz="0 0.9 0"/>
+	</joint>
+	
+
+	<link name="sag_on_teker">
+		<visual>
+			<geometry>
+				<cylinder length="0.05" radius="0.4"/>
+			</geometry>
+		<origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+		<material name="siyah"/>
+		</visual>
+	</link>
+
+	<joint name="sag_on_teker_baglanti"  type="prismatic">
+		<axis xyz="0 1 0"/>
+	<parent link="sag_on_kramer"/>
+	<child link="sag_on_teker"/>
+	<limit effort="1000.0" lower="-0.15" upper="0" velocity="0.5"/>
+	<origin xyz="0 0.08 0"/>
+	</joint>
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+		<link name="sol_arka_tasiyici">
+		<visual>
+			<geometry>
+				<box size="0.05 0.3 0.05"/>
+			</geometry>
+		</visual>	
+	</link>
+
+	<joint name="sol_arka_tasiyici_joint" type="fixed">
+   <parent link="ana_govde"/>
+   <child link="sol_arka_tasiyici"/>
+   <origin xyz="-1.2 -0.73 -0.1"/>
+	</joint>
+
+	<link name="sol_arka_kramer">
+		<visual>
+			<geometry>
+				<cylinder length="0.01" radius="0.03"/>
+			</geometry>
+			<material name="siyah"/>
+		</visual>
+	</link>
+
+	<joint name="sol_arka_kramer_joint" type="fixed">
+		<parent link="sol_arka_tasiyici"/>
+		<child link="sol_arka_kramer"/>
+		<origin xyz="0 -0.188 0"/>
+	</joint>
+
+		<link name="sol_arka_teker">
+		<visual>
+			<geometry>
+				<cylinder length="0.05" radius="0.4"/>
+			</geometry>
+		<origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+		<material name="siyah"/>
+		</visual>
+	</link>
+
+	<joint name="sol_arka_teker_baglanti"  type="continuous">
+		<axis xyz="0 1 0"/>
+	<parent link="sol_arka_kramer"/>
+	<child link="sol_arka_teker"/>
+	<origin xyz="0 -0.05 0"/>
+	</joint>
+
+
+
+
+	
+
+	<joint name="sag_on_tasiyici_joint" type="fixed">
+   <parent link="ana_govde"/>
+   <child link="sol_on_tasiyici"/>
+   <origin xyz="1.2 0.73 -0.1"/>
+	</joint>
+
+
+
+
+
+
+
+
+
+
+		<link name="sag_arka_tasiyici">
+		<visual>
+			<geometry>
+				<box size="0.05 0.3 0.05"/>
+			</geometry>
+		</visual>	
+	</link>
+
+	<joint name="sag_arka_tasiyici_joint" type="fixed">
+   <parent link="ana_govde"/>
+   <child link="sag_arka_tasiyici"/>
+   <origin xyz="-1.2 0.73 -0.1"/>
+	</joint>
+
+	<link name="sag_arka_kramer">
+		<visual>
+			<geometry>
+				<cylinder length="0.01" radius="0.03"/>
+			</geometry>
+			<material name="siyah"/>
+		</visual>
+	</link>
+
+	<joint name="sag_arka_kramer_joint" type="fixed">
+    <parent link="sag_arka_tasiyici"/>
+		<child link="sag_arka_kramer"/>
+		<origin xyz="0 0.188 0"/>
+	</joint>
+
+		<link name="sag_arka_teker">
+		<visual>
+			<geometry>
+				<cylinder length="0.05" radius="0.4"/>
+			</geometry>
+		<origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+		<material name="siyah"/>
+		</visual>
+	</link>
+
+	<joint name="sag_arka_teker_baglanti"  type="continuous">
+		<axis xyz="0 1 0"/>
+	<parent link="sag_arka_kramer"/>
+	<child link="sag_arka_teker"/>
+	<origin xyz="0 0.05 0"/>
+	</joint>
+
+
+
+
+
+	
+	
+</robot>

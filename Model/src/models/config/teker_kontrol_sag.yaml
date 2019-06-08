@@ -1,0 +1,4 @@
+type: "position_controllers/JointPositionController"
+joint: sag_kramer_joint
+pid: {p: 4.0, i: 0.0, d: 1.0}
+

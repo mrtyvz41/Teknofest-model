@@ -1,0 +1,290 @@
+<?xml version="1.0"?>
+<robot name="evrim4" xmlns:xacro="http://ros.org/wiki/xacro">
+
+
+											<!-- DEGISKENLER -->		
+
+<xacro:property name="uzunluk" value="3.0" />
+<xacro:property name="genislik" value="1.0" />
+<xacro:property name="yukseklik" value="0.5" />
+<xacro:property name="ta_uzunluk" value="0.05" /> <!-- Tasiyici uzunluk degeri -->
+<xacro:property name="ta_genislik" value="1.2" />
+<xacro:property name="ta_yukseklik" value="0.05" />
+<xacro:property name="k_uzunluk" value="0.01" /> <!-- kramer uzunluk degeri -->
+<xacro:property name="k_radius" value="0.03" />
+<xacro:property name="te_uzunluk" value="0.08" /> 
+<xacro:property name="te_radius" value="0.3" /> <!-- teker radius degeri -->
+<xacro:property name="pi" value="3.1415" />
+
+													<!-- RENKLER -->
+	<material name="mavi">
+		<color rgba="0 0 1 1"/>
+	</material>
+	<material name="siyah">
+		<color rgba="1 1 1 1"/>
+	</material>
+	<material name="beyaz">
+		<color rgba="0 0 0 1"/>
+	</material>
+												<!-- AGIRLIK GIRDISI -->
+  <xacro:macro name="agirlik" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </xacro:macro>
+
+												<!-- ANA GOVDE -->
+
+	<link name="ana_govde">
+		<visual>
+			<geometry>
+				<box size="${uzunluk} ${genislik} ${yukseklik}"/>
+			</geometry>
+			<material name="mavi"/>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="${uzunluk} ${genislik} ${yukseklik}"/>
+			</geometry>
+		</collision>
+	  <xacro:agirlik mass="10"/>
+	</link>
+												<!-- ARKA TASIYICI -->
+	<link name="arka_tasiyici">
+		<visual>
+			<geometry>
+				<box size="${ta_uzunluk} ${ta_genislik} ${ta_yukseklik}"/>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="${ta_uzunluk} ${ta_genislik} ${ta_yukseklik}"/>
+			</geometry>
+		</collision>
+	  <xacro:agirlik mass="3"/>
+	</link>
+
+	<joint name="arka_tasiyici_joint" type="fixed">
+		<parent link="ana_govde"/>
+		<child link="arka_tasiyici"/>
+		<origin xyz="-1.0 0 -0.008"/>
+	</joint>
+												<!-- ON TASIYICI -->
+	<link name="on_tasiyici">
+		<visual>
+			<geometry>
+				<box size="${ta_uzunluk} ${ta_genislik} ${ta_yukseklik}"/>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="${ta_uzunluk} ${ta_genislik} ${ta_yukseklik}"/>
+			</geometry>
+		</collision>
+	  <xacro:agirlik mass="3"/>
+	</link>	
+
+	<joint name="on_tasiyici_joint" type="fixed">
+		<parent link="ana_govde"/>
+		<child link="on_tasiyici"/>
+		<origin xyz="1.0 0 -0.008"/>
+	</joint> 
+												<!-- ARKA TEKERLEK -->
+														<!--  arka/on ,sol/sag, sol/sag konum degeri-->
+  <xacro:macro name="teker" params="prefix suffix reflect">
+    <link name="${prefix}_${suffix}_teker">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}" />
+        <geometry>
+          <cylinder radius="${te_radius}" length="${te_uzunluk}"/>
+        </geometry>
+        <material name="siyah"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}" />
+        <geometry>
+          <cylinder radius="${te_radius}" length="${te_uzunluk}"/>
+        </geometry>
+      </collision>
+      <xacro:agirlik mass="2"/>
+    </link>
+    <joint name="${prefix}_${suffix}_teker_joint" type="continuous">
+      <axis xyz="0 1 0" rpy="0 0 0" />
+      <parent link="${prefix}_tasiyici"/>
+      <child link="${prefix}_${suffix}_teker"/>
+      <origin xyz="0 ${reflect*0.6} 0 " rpy="0 0 0"/>
+    </joint>
+    
+    <gazebo reference="${prefix}_${suffix}_teker">
+      <mu1 value="200.0"/>
+      <mu2 value="100.0"/>
+      <kp value="10000000.0"/>
+      <kd value="1.0"/>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+<!--
+    <transmission name="${prefix}_${suffix}_teker_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <actuator name="${prefix}_${suffix}_teker_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+      <joint name="${prefix}_${suffix}_teker_joint">
+				<hardwareInterface>VelocityJointInterface</hardwareInterface>
+      </joint>
+    </transmission>
+-->
+  </xacro:macro>
+
+  <xacro:teker prefix="arka" suffix="sol" reflect="1" />
+  <xacro:teker prefix="arka" suffix="sag" reflect="-1" />
+
+												<!-- KRAMER -->
+												 <!-- on,arka joint, sol/sag, sol/sag konum -->
+  <xacro:macro name="kramer" params="prefix suffix reflect">
+    <link name="${suffix}_kramer">
+      <visual>
+        <geometry>
+          <cylinder radius="${k_radius}" length="${k_uzunluk}"/>
+        </geometry>
+        <material name="beyaz"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="${k_radius}" length="${k_uzunluk}"/>
+        </geometry>
+      </collision>
+      <xacro:agirlik mass="1"/>
+    </link>
+    <joint name="${suffix}_kramer_joint" type="revolute">
+      <axis xyz="0 0 1"/>
+			<limit effort="1000.0" lower="-0.548" upper="0.548" velocity="0.8"/>
+      <parent link="${prefix}_tasiyici"/>
+      <child link="${suffix}_kramer"/>
+      <origin xyz="0 ${reflect*0.6} 0 " rpy="0 0 0"/>
+    </joint>
+    
+    <gazebo reference="${suffix}_kramer">
+      <mu1 value="200.0"/>
+      <mu2 value="100.0"/>
+      <kp value="10000000.0"/>
+      <kd value="1.0"/>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+   
+    <transmission name="${suffix}_kramer_trans" >
+      <type>transmission_interface/SimpleTransmission</type>
+      <actuator name="${suffix}_kramer_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+      <joint name="${suffix}_kramer_joint">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+      </joint>
+    </transmission>
+    
+  </xacro:macro>
+
+  <xacro:kramer prefix="on" suffix="sol" reflect="1" />
+  <xacro:kramer prefix="on" suffix="sag" reflect="-1" />
+
+<xacro:macro name="aks" params="suffix reflect">
+
+								<!-- AKS -->
+<link name="${suffix}_aks">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}" />
+        <geometry>
+          <cylinder radius="0.01" length="0.05"/>
+        </geometry>
+        <material name="mavi"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}" />
+        <geometry>
+          <cylinder radius="0.01" length="0.05"/>
+        </geometry>
+      </collision>
+      <xacro:agirlik mass="2"/>
+    </link>
+
+    <joint name="${suffix}_aks_joint" type="continuous">
+      <axis xyz="0 1 0" rpy="0 0 0" />
+      <parent link="${suffix}_kramer"/>
+      <child link="${suffix}_aks"/>
+      <origin xyz="0 ${reflect*0.05} 0 " rpy="0 0 0"/>
+    </joint>
+
+    <gazebo reference="${suffix}_aks">
+      <mu1 value="200.0"/>
+      <mu2 value="100.0"/>
+      <kp value="10000000.0"/>
+      <kd value="1.0"/>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+</xacro:macro>
+
+  <xacro:aks suffix="sol" reflect="1" />
+  <xacro:aks suffix="sag" reflect="-1" />
+
+														<!-- ON TEKERLEK -->
+														 <!--  arka/on ,sol/sag, sol/sag(+/-) konum degeri-->
+  <xacro:macro name="o_teker" params="prefix suffix reflect">
+
+    <link name="${prefix}_${suffix}_teker">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}" />
+        <geometry>
+          <cylinder radius="${te_radius}" length="${te_uzunluk}"/>
+        </geometry>
+        <material name="siyah"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}" />
+        <geometry>
+          <cylinder radius="${te_radius}" length="${te_uzunluk}"/>
+        </geometry>
+      </collision>
+      <xacro:agirlik mass="2"/>
+    </link>
+
+    <joint name="${prefix}_${suffix}_teker_joint" type="continuous">
+      <axis xyz="0 1 0" rpy="0 0 0" />
+      <parent link="${suffix}_aks"/>
+      <child link="${prefix}_${suffix}_teker"/>
+      <origin xyz="0 ${reflect*0.1} 0 " rpy="0 0 0"/>
+    </joint>
+    
+    <gazebo reference="${prefix}_${suffix}_teker">
+      <mu1 value="200.0"/>
+      <mu2 value="100.0"/>
+      <kp value="10000000.0"/>
+      <kd value="1.0"/>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <transmission name="${prefix}_${suffix}_teker_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <actuator name="${prefix}_${suffix}_teker_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+      <joint name="${prefix}_${suffix}_teker_joint">
+				<hardwareInterface>VelocityJointInterface</hardwareInterface>
+      </joint>
+    </transmission>
+    
+  </xacro:macro>
+
+  <xacro:o_teker prefix="on" suffix="sol" reflect="1" />
+  <xacro:o_teker prefix="on" suffix="sag" reflect="-1" />
+
+
+
+
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+      <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo>
+</robot>

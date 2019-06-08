@@ -1,0 +1,5 @@
+type: "position_controllers/JointGroupPositionController"
+joints:
+ - sol_kramer_joint
+ - sag_kramer_joint
+
